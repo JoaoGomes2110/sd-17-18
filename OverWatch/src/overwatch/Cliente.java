@@ -60,9 +60,10 @@ public class Cliente {
             System.out.println("> 2 -> Register");
             String op = systemIn.readLine();
             String opResponse = "0";
-            String msgResponse;
+            String msgResponse = null;
             
             while(opResponse.equals("0")){
+                
                 System.out.println("> Username: ");
                 this.username = systemIn.readLine();
             
@@ -84,8 +85,18 @@ public class Cliente {
                 opResponse= in.readLine();
                 msgResponse = in.readLine();
                 System.out.println(msgResponse);
+                
+                if(opResponse.equals("0")){
+                    System.out.println("********* Choose what do you want ***********");
+                    System.out.println("> 1 -> Login");
+                    System.out.println("> 2 -> Register");
+                    op = systemIn.readLine(); 
+                }
                     
             }
+            
+            
+           
             
     //*************************************** Login/Register Complete ********************************************************
     
@@ -99,10 +110,11 @@ public class Cliente {
             out.newLine();
             out.flush();
             
-            while(!op.equals("2")){
+            while(op.equals("1")){
                 System.out.println("> Loading ...");
                 msgResponse = in.readLine();
-                System.out.println(msgResponse);
+                
+                
                 
                 
                 

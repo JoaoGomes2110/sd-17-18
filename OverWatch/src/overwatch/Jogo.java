@@ -5,22 +5,27 @@
  */
 package overwatch;
 
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class Jogo {
     
     private String nome;
     private Equipa casa;
     private Equipa fora;
-     
+    
+    private ReentrantLock lock;
+    private Condition condition;
+    private int quantidadeJogadores;
+    
+    
     public Jogo (String nome){
         this.nome = nome;
         this.casa = new Equipa();
         this.fora = new Equipa();
-    }
-    
-    public Jogo (Equipa casa, Equipa fora){
-        this.casa = casa;
-        this.fora = fora;
-        
+        this.lock = new ReentrantLock();
+        this.condition = this.lock.newCondition();
+        this.quantidadeJogadores = 0;
     }
     
     public String getNome(){
@@ -34,8 +39,6 @@ public class Jogo {
     public Equipa getEquipaFora(){
         return this.fora;
     }
-    
-    
     
      
     public Equipa simularJogo(){
@@ -62,13 +65,17 @@ public class Jogo {
         }
     }
 
-    public String addJogador(Jogador jogador) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void addJogador(Jogador jogador) {
+    
+        
     }
-
-    public int getQuantidade() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+   
+    public synchronized int getQuantidade() {
+        return this.quantidadeJogadores;
     }
+    
+    
+    
     
     
    
