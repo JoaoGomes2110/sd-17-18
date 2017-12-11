@@ -109,15 +109,11 @@ public class Cliente {
             out.write(op);
             out.newLine();
             out.flush();
-            
-            while(op.equals("1")){
+            msgResponse = in.readLine();
+            System.out.println(msgResponse);
+            if(op.equals("1")){
                 System.out.println("> Loading ...");
-                msgResponse = in.readLine();
-                
-                
-                
-                
-                
+                msgResponse = in.readLine();   
             }
            
 

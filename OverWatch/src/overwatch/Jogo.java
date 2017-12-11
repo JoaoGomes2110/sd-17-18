@@ -14,8 +14,7 @@ public class Jogo {
     private Equipa casa;
     private Equipa fora;
     
-    private ReentrantLock lock;
-    private Condition condition;
+    private Barreira barreira;
     private int quantidadeJogadores;
     
     
@@ -23,8 +22,7 @@ public class Jogo {
         this.nome = nome;
         this.casa = new Equipa();
         this.fora = new Equipa();
-        this.lock = new ReentrantLock();
-        this.condition = this.lock.newCondition();
+        this.barreira = new Barreira(5);
         this.quantidadeJogadores = 0;
     }
     
@@ -39,8 +37,7 @@ public class Jogo {
     public Equipa getEquipaFora(){
         return this.fora;
     }
-    
-     
+   
     public Equipa simularJogo(){
         int rCasa =0;
         int rFora = 0;
@@ -65,13 +62,22 @@ public class Jogo {
         }
     }
 
-    public void addJogador(Jogador jogador) {
-    
+    public synchronized void addJogador(Jogador jogador) {
+        if(this.casa.getQuantidade()<5){
+            this.casa.addJogador(jogador);
+        }else if(this.fora.getQuantidade()<5){
+            this.fora.addJogador(jogador);  
+        }
+        System.out.println("O gomes tem a puta da mania");
         
     }
    
     public synchronized int getQuantidade() {
         return this.quantidadeJogadores;
+    }
+
+    public Barreira getBarreira() {
+       return this.barreira;
     }
     
     

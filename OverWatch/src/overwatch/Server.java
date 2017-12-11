@@ -9,7 +9,9 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -96,23 +98,64 @@ public class Server {
        
     }
 
-    public Jogador getJogador(String username) {
+   public Jogador getJogador(String username) {
         return this.jogadores.get(username);
     }
 
-    public synchronized Jogo createGame() {
+   public synchronized Jogo createGame() {
         Jogo jogo = new Jogo ("Game"+String.valueOf(this.number));
         this.games.put(this.number,jogo);
         this.number++;
         return jogo;     
     }
 
-    public synchronized Jogo getGame() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+   public synchronized Jogo getGame() {
+        for(Jogo j : this.games.values()){
+            if(j.getQuantidade()<10){
+                return j;
+            }
+        }
+        return null;
     }
 
-    public void multicastGame(Jogo actualGame, String msg) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+   public void multicastGame(Jogo actualGame, String msg) {
+        ArrayList<String> jogadoresCasa = new ArrayList<>();
+        ArrayList<String> jogadoresFora = new ArrayList<>();
+        
+        Equipa casa = actualGame.getEquipaCasa();
+        Equipa fora = actualGame.getEquipaFora();
+        jogadoresCasa = casa.getJogadores();
+        jogadoresFora = fora.getJogadores();
+        
+        HashMap<String, BufferedWriter> clientsToSend = new HashMap<>();
+        
+        for(Map.Entry<String, BufferedWriter> s: clients.entrySet()){
+            for(String a: jogadoresCasa){
+                if(s.equals(a)){
+                    clientsToSend.put(a,clients.get(s));
+                }
+            } 
+        }
+        
+        for(Map.Entry<String, BufferedWriter> s: clients.entrySet()){
+            for(String b: jogadoresFora){
+                if(s.equals(b)){
+                    clientsToSend.put(b,clients.get(s));
+                }
+            } 
+        }
+        
+	for(String user : clientsToSend.keySet()) {
+            
+            try {
+                BufferedWriter bw = clients.get(user);
+		bw.write(msg);
+		bw.newLine();
+		bw.flush();
+            } catch (IOException e) {
+		e.printStackTrace();
+            }
+        }
     }
 
    public void carregarListaJogadores(){
@@ -155,5 +198,14 @@ public class Server {
        this.listaherois.put("RuiVitoria", new Heroi("RuiVitoria",1));
      
    }
+
+   public boolean hasGame() {
+        for(Jogo j : this.games.values()){
+            if(j.getQuantidade()<10){
+                return true;
+            }
+        }
+        return false;    
+    }
    
 }

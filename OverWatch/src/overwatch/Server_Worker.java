@@ -23,6 +23,7 @@ public class Server_Worker implements Runnable {
     private BufferedReader in;
     private BufferedWriter out;
     
+    
     private String username;
     private String password;
 
@@ -32,6 +33,7 @@ public class Server_Worker implements Runnable {
         this.socket = socket;
         this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+
     }
 
     
@@ -111,29 +113,25 @@ public class Server_Worker implements Runnable {
             while(op.equals("1")){
                 
                 if(op.equals("1")){
-                    Jogo actualGame = this.server.getGame();
-                    
-                    if(actualGame!=null){
-                        out.write(actualGame.getNome());
+                    boolean testGame = this.server.hasGame();
+                    Jogo actualGame = null;
+                    if(testGame == true){
+                        actualGame = this.server.getGame();
+                        out.write("Foste adicionado ao jogo: "+ actualGame.getNome());
                         out.newLine();
                         out.flush();
                         
-                    }else{
+                    }else if(testGame == false){
                         actualGame = this.server.createGame();
-                        out.write(actualGame.getNome());
+                        out.write("Foste adicionado ao jogo: "+ actualGame.getNome());
                         out.newLine();
                         out.flush();
                     }
                     
-                    System.out.println("Game "+ actualGame.getNome()+ "has one more player : " +this.username);
-                    
-                    while(actualGame.getQuantidade()<10){
-                        String msg = "Waiting for other players...";
-                        
-                        this.server.multicastGame(actualGame,msg);
-                        
-                        
-                    }
+                    actualGame.addJogador(jogador);
+                    Barreira b = actualGame.getBarreira();
+                    b.esperar();
+                    this.server.multicastGame(actualGame, "Ide todos po crl");
                     
                         
                 }else if(op.equals("2")){

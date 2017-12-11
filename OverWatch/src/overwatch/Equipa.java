@@ -5,6 +5,8 @@
  */
 package overwatch;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author tiagofraga
@@ -26,7 +28,7 @@ public class Equipa {
         return this.quantidade;
     }
 
-    public void addJogador(Jogador j) {
+    public synchronized void addJogador(Jogador j) {
         this.jogadores[quantidade]=j;
         this.quantidade++;
     }
@@ -43,6 +45,15 @@ public class Equipa {
         for(int i=0; i<this.quantidade; i++){
             this.jogadores[i].updateRank();
         }
+    }
+    
+    public ArrayList<String> getJogadores(){
+        ArrayList<String> nova = new ArrayList<>();
+        for(Jogador j: jogadores){
+            nova.add(j.getUsername());
+        }
+        return nova;
+        
     }
     
 }
