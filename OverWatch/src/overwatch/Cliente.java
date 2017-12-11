@@ -111,9 +111,14 @@ public class Cliente {
             out.flush();
             msgResponse = in.readLine();
             System.out.println(msgResponse);
+            Thread listener = new Thread (new ClientListener());
+            listener.start();
             if(op.equals("1")){
                 System.out.println("> Loading ...");
-                msgResponse = in.readLine();   
+                msgResponse = in.readLine();
+                System.out.println(msgResponse);
+                msgResponse = in.readLine();
+                System.out.println(msgResponse);
             }
            
 

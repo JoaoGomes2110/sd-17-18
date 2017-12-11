@@ -39,7 +39,6 @@ public class Barreira {
 	
         else{ 
             while(cur_etapa == this.counterEtapa){
-		System.out.println("A barreira tem " + this.counterElem + "/"+this.maxElem+" elementos na etapa "+counterEtapa+" -> Thread "+Thread.currentThread().getName()+" espera");
                 try {
                     this.wait();
 		} catch (InterruptedException e) {

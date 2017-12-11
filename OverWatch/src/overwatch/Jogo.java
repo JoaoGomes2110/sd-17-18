@@ -68,7 +68,6 @@ public class Jogo {
         }else if(this.fora.getQuantidade()<5){
             this.fora.addJogador(jogador);  
         }
-        System.out.println("O gomes tem a puta da mania");
         
     }
    

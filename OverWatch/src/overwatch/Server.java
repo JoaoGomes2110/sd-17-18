@@ -20,17 +20,17 @@ import java.util.Map;
  */
 public class Server {
     
-    private ServerSocket serverSocket;
-    private int porta;
+   private ServerSocket serverSocket;
+   private int porta;
     
     
-    private HashMap <String, Jogador> jogadores;
-    private HashMap <String,BufferedWriter> clients;
-    private HashMap <Integer,Jogo> games;
-    private HashMap <String,Heroi> listaherois;
-    private int number;
+   private HashMap <String, Jogador> jogadores;
+   private HashMap <String,BufferedWriter> clients;
+   private HashMap <Integer,Jogo> games;
+   private HashMap <String,Heroi> listaherois;
+   private int number;
     
-    public Server(int porta) throws IOException{
+   public Server(int porta) throws IOException{
 	this.porta = porta;
         this.jogadores = new HashMap<>();
         this.clients = new HashMap<>();
@@ -39,7 +39,7 @@ public class Server {
         this.number = 0;
     }
     
-    public void startServer(){
+   public void startServer(){
 	try {
             System.out.println("#### OverWatch SERVER ####");
             this.serverSocket = new ServerSocket(this.porta);
@@ -64,7 +64,7 @@ public class Server {
 	
     }
     
-    public synchronized boolean registerClient(String nick, String pass, BufferedWriter writer){
+   public synchronized boolean registerClient(String nick, String pass, BufferedWriter writer){
 	Jogador novo = new Jogador(nick,pass);
         if(!(jogadores.containsKey(nick))){
             jogadores.put(nick,novo);
@@ -76,7 +76,7 @@ public class Server {
      
     }
     
-    public synchronized boolean loginClient(String nick, String pass, BufferedWriter writer){
+   public synchronized boolean loginClient(String nick, String pass, BufferedWriter writer){
         if(jogadores.containsKey(nick)){
             Jogador j = jogadores.get(nick);
             if(j.getPassword().equals(pass)){
@@ -88,11 +88,11 @@ public class Server {
         return false;
     }
     
-    public synchronized void shutdownClient(String nick){
+   public synchronized void shutdownClient(String nick){
         clients.remove(nick);
     }
     
-    public static void main(String[] args) throws IOException {
+   public static void main(String[] args) throws IOException {
         Server s = new Server(12345);
         s.startServer();
        
@@ -118,25 +118,28 @@ public class Server {
         return null;
     }
 
-   public void multicastGame(Jogo actualGame, String msg) {
-        ArrayList<String> jogadoresCasa = new ArrayList<>();
-        ArrayList<String> jogadoresFora = new ArrayList<>();
+   public void multicastGame(Jogo actualGame, String msg, String actualPlayer) {
         
+       ArrayList<String> jogadoresCasa;
+        //ArrayList<String> jogadoresFora;
         Equipa casa = actualGame.getEquipaCasa();
-        Equipa fora = actualGame.getEquipaFora();
+        //Equipa fora = actualGame.getEquipaFora();
         jogadoresCasa = casa.getJogadores();
-        jogadoresFora = fora.getJogadores();
+        //jogadoresFora = fora.getJogadores();
+        
+        
         
         HashMap<String, BufferedWriter> clientsToSend = new HashMap<>();
         
-        for(Map.Entry<String, BufferedWriter> s: clients.entrySet()){
+        for(String s: clients.keySet()){
             for(String a: jogadoresCasa){
-                if(s.equals(a)){
+                if(s.equals(a)){ 
                     clientsToSend.put(a,clients.get(s));
-                }
+                }  
             } 
         }
         
+        /*
         for(Map.Entry<String, BufferedWriter> s: clients.entrySet()){
             for(String b: jogadoresFora){
                 if(s.equals(b)){
@@ -144,14 +147,16 @@ public class Server {
                 }
             } 
         }
-        
+        */
 	for(String user : clientsToSend.keySet()) {
             
             try {
-                BufferedWriter bw = clients.get(user);
-		bw.write(msg);
-		bw.newLine();
-		bw.flush();
+                if(!user.equals(actualPlayer)){
+                    BufferedWriter bw = clientsToSend.get(user);
+                    bw.write(msg);
+                    bw.newLine();
+                    bw.flush();
+                }
             } catch (IOException e) {
 		e.printStackTrace();
             }

@@ -131,7 +131,7 @@ public class Server_Worker implements Runnable {
                     actualGame.addJogador(jogador);
                     Barreira b = actualGame.getBarreira();
                     b.esperar();
-                    this.server.multicastGame(actualGame, "Ide todos po crl");
+                    this.server.multicastGame(actualGame, "Ide todos po crl", jogador.getUsername());
                     
                         
                 }else if(op.equals("2")){
