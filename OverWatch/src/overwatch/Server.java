@@ -16,7 +16,7 @@ import java.util.Map;
 
 /**
  *
- * @author tiagofraga
+ * @author
  */
 public class Server {
     

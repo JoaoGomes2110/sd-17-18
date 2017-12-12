@@ -7,7 +7,7 @@ package overwatch;
 
 /**
  *
- * @author tiagofraga
+ * @author
  */
 
 public class Player {

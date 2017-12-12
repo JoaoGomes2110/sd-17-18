@@ -14,7 +14,7 @@ import java.net.Socket;
 
 /**
  *
- * @author tiagofraga
+ * @author
  */
 public class Server_Worker implements Runnable {
     
