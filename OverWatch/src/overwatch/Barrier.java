@@ -9,13 +9,13 @@ package overwatch;
  *
  * @author tiagofraga
  */
-public class Barreira {
+public class Barrier {
     
     private int maxElem;
     private int counterElem;
     private int counterEtapa;
 
-    public Barreira(int n){
+    public Barrier(int n){
         this.maxElem=n;
         this.counterElem=0;
 	this.counterEtapa=0;

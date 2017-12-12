@@ -10,13 +10,13 @@ package overwatch;
  * @author tiagofraga
  */
 
-public class Jogador {
+public class Player {
     
     private String username;
     private String password;
     private int rank;
     
-    public Jogador(String user, String pass){
+    public Player(String user, String pass){
         this.username = user;
         this.password = pass;
         this.rank = 0;

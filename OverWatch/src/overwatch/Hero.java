@@ -9,26 +9,26 @@ package overwatch;
  *
  * @author tiagofraga
  */
-public class Heroi {
+public class Hero {
     
-    private String nome;
+    private String name;
     private int overall;
     
-    public Heroi (String nome, int o){
-        this.nome = nome; 
+    public Hero (String name, int o){
+        this.name = name; 
         this.overall = o;
     }
    
-    public String getNome(){
-        return this.nome;
+    public String getName(){
+        return this.name;
     }
     
     public int getOverall(){
         return this.overall;
     }
     
-    public void setNome(String nome){
-        this.nome = nome;
+    public void setName(String name){
+        this.name = name;
     }
     
     public void setOverall(int o){
