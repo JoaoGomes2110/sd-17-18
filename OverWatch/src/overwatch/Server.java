@@ -118,7 +118,7 @@ public class Server {
         return null;
     }
 
-   public void multicastGame(Jogo actualGame, String msg, String actualPlayer) {
+   public synchronized void multicastGame(Jogo actualGame, String msg, String actualPlayer) {
         
        ArrayList<String> jogadoresCasa;
         //ArrayList<String> jogadoresFora;
@@ -162,6 +162,50 @@ public class Server {
             }
         }
     }
+   
+   public synchronized void showHerois(Jogo actualGame){
+       
+        ArrayList<String> jogadoresCasa;
+        //ArrayList<String> jogadoresFora;
+        Equipa casa = actualGame.getEquipaCasa();
+        //Equipa fora = actualGame.getEquipaFora();
+        jogadoresCasa = casa.getJogadores();
+        //jogadoresFora = fora.getJogadores();
+
+       HashMap<String, BufferedWriter> clientsToSend = new HashMap<>();
+        
+        for(String s: clients.keySet()){
+            for(String a: jogadoresCasa){
+                if(s.equals(a)){ 
+                    clientsToSend.put(a,clients.get(s));
+                }  
+            } 
+        }
+        
+        /*
+        for(Map.Entry<String, BufferedWriter> s: clients.entrySet()){
+            for(String b: jogadoresFora){
+                if(s.equals(b)){
+                    clientsToSend.put(b,clients.get(s));
+                }
+            } 
+        }
+        */
+       for(BufferedWriter out : clientsToSend.values()){ 
+           int i = 1;
+           for(String s: this.listaherois.keySet()){
+              try{
+                String heroi = i + " - " + s;   
+                out.write(heroi);
+                out.newLine();
+                out.flush();
+                i++;
+              }catch(IOException e){
+                  System.out.println(e.getMessage());
+              }
+            }
+       }
+   }
 
    public void carregarListaJogadores(){
        this.jogadores.put("tiagofraga",new Jogador("tiagofraga","tiago"));

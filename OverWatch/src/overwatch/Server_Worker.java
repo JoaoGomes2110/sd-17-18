@@ -135,11 +135,12 @@ public class Server_Worker implements Runnable {
                     
                         
                 }else if(op.equals("2")){
-                
+                    
                 }
-                op = in.readLine();
+               op = in.readLine();
+               
             }
-       
+            
             System.out.println("> Client "+ this.username + " exit the system");
             this.server.shutdownClient(this.username);
             
