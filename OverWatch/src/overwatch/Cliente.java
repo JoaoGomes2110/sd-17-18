@@ -118,12 +118,13 @@ public class Cliente {
             if(op.equals("1")){
                 System.out.println("> Loading ...");
                 String answer;
-                msgResponse = in.readLine();
-                while(!msgResponse.equals("PARAR")){
+                while(!msgResponse.equals("FIM")){
                    answer = systemIn.readLine();
                    out.write(answer);
                    out.newLine();
                    out.flush();
+                   msgResponse = in.readLine();
+                   
                 }
                
                 System.out.println("EXIT THE THE SELECT HERO");
@@ -149,7 +150,9 @@ public class Cliente {
             String message;
             try {
 		while((message = in.readLine()) != null){
-                    System.out.println(message);
+                    
+                        System.out.println(message);
+                    
 		}
             }catch (SocketException e) {}
             catch (IOException e) {

@@ -15,6 +15,7 @@ public class Jogo {
     private Equipa casa;
     private Equipa fora;
     private HashMap<Integer,Heroi> listaherois;
+    private int escolhidos;
     
     private Barreira barreira;
     private int quantidade;
@@ -29,6 +30,7 @@ public class Jogo {
         this.listaherois = new HashMap<>();
         this.barreira = new Barreira(5);
         this.quantidade = 0;
+        this.escolhidos = 0;
         
     }
     
@@ -47,8 +49,7 @@ public class Jogo {
     public HashMap<Integer,Heroi> getListaHerois(){
         return this.listaherois;
     }
-   
-
+  
     public synchronized void addJogador(Jogador jogador) {
         if(this.casa.getQuantidade()<5){
             this.casa.addJogador(jogador);
@@ -58,7 +59,6 @@ public class Jogo {
         
     }
    
-    
     public synchronized int getQuantidade() {
         return this.quantidade;
     }
@@ -75,7 +75,14 @@ public class Jogo {
         }
         int n = Integer.parseInt(message);
         Heroi heroi = this.listaherois.get(n);
-         return atual.addHeroi(jogador,heroi);
+        boolean bol = atual.addHeroi(jogador,heroi);
+        if(bol == true){
+            synchronized(this){
+                this.escolhidos++;
+            }
+            
+        }
+        return bol;
     }
 
     public Equipa getEquipaJogador(String username) { 
@@ -85,6 +92,10 @@ public class Jogo {
             atual = this.fora.getEquipa(username);
         }
         return atual;
+    }
+
+    public int getEscolhidos() {
+       return this.escolhidos;
     }
 
     

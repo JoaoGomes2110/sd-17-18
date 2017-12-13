@@ -172,7 +172,7 @@ public class Server {
     
    public void carregarListaHerois(HashMap<Integer,Heroi> listaherois){
        listaherois.put(1, new Heroi("PintodaCosta", 99));
-       listaherois.put(2, new Heroi("Aboubakar", 83));
+       listaherois.put(2, new Heroi("Aboubakar", 93));
        listaherois.put(3, new Heroi("Marega", 99));
        listaherois.put(4, new Heroi("Brahimi", 94));
        listaherois.put(5, new Heroi("DaniloPereira", 93));
@@ -181,7 +181,7 @@ public class Server {
        listaherois.put(8, new Heroi("Felipe", 91));
        listaherois.put(9, new Heroi("TiquinhoSoares",90));
        listaherois.put(10, new Heroi("SergioConceicao",95));
-       listaherois.put(11, new Heroi("BrunoCarvalho",70));
+       listaherois.put(11, new Heroi("BrunoCarvalho",60));
        listaherois.put(12, new Heroi("GelsonMartins",80));
        listaherois.put(13, new Heroi("WiliamCarvalho",75));
        listaherois.put(14, new Heroi("BrunoFernandes",79));
@@ -213,7 +213,7 @@ public class Server {
         return false;    
     }
 
-    public void multicastTeam(Jogo actualGame, String username, String heroi) {
+   public void multicastTeam(Jogo actualGame, String username, String heroi) {
           
         ArrayList<String> jogadoresAtual;
         Equipa atual = actualGame.getEquipaJogador(username);
@@ -236,18 +236,11 @@ public class Server {
             try {
                 if(!user.equals(username)){
                     BufferedWriter bw = clientsToSend.get(user);
-                    for(int i =1; i<31; i++){
-                        if(i == Integer.parseInt(heroi)){
-                            bw.write(i + " -> "+ this.listaHerois.get(i) + "-> CHOOSEN BY: "+ username);
-                            bw.newLine();
-                            bw.flush();
-                        }else{
-                            bw.write(i + " -> "+ this.listaHerois.get(i));
-                            bw.newLine();
-                            bw.flush();
-                            
-                        }
-                    }
+                    int i = Integer.parseInt(heroi);
+                    bw.write(i + " -> "+ this.listaHerois.get(i).getNome() + "-> CHOOSEN BY: "+ username);
+                    bw.newLine();
+                    bw.flush();
+                    
                 }
             } catch (IOException e) {
 		e.printStackTrace();

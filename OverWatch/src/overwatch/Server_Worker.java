@@ -148,17 +148,32 @@ public class Server_Worker implements Runnable {
                        out.flush();
                     }
                     
-                    Thread t1 = new Thread(new SW_Listener(this.in, this.out, actualGame, jogador, this.server));
-                    t1.start();
-                    try {                    
-                        sleep(30000);
-                        out.write("PARAR");
-                        out.newLine();
-                        out.flush();
-                        t1.join();
-                    } catch (InterruptedException ex) {
+                    int escolhidos = actualGame.getEscolhidos();
+                    while(escolhidos<5){
+                        Thread t1 = new Thread(new SW_Listener(this.in, this.out, actualGame, jogador, this.server));
+                        t1.start();
+                        try {                    
+                            sleep(30000);
+                            t1.join();
+                            System.out.println("ACABOU O SLEEP");
+                            escolhidos = actualGame.getEscolhidos();
+                            if(escolhidos<5){
+                                out.write("NAO FORAM ESCOLHDOS TODOS OS HEROIS, ESCOLHA OUTRO:");
+                                out.newLine();
+                                out.flush();
+                            }
+                        } catch (InterruptedException ex) {
                         Logger.getLogger(Server_Worker.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
+                    
+                    System.out.println("FIMMMMMMMMMM");
+                    out.write("FIM");
+                    out.newLine();
+                    out.flush();
+                    
+                    
+                        
                     
                     
                     
