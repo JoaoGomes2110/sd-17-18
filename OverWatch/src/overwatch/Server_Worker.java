@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author tiagofraga
+ * @author
  */
 public class Server_Worker implements Runnable {
     
@@ -47,22 +47,22 @@ public class Server_Worker implements Runnable {
     public void run() {
         try {
             String op;
-            boolean sucesso= false;
+            boolean success= false;
             
 //************************************FAZER O REGISTO**********************************************************
             op = in.readLine();
             username = in.readLine();
             password = in.readLine();
             
-            while(!sucesso){
+            while(!success){
                 
                 if(op.equals("1")){
-                    sucesso = this.server.loginClient(username, password, out);
+                    success = this.server.loginClient(username, password, out);
                 } else if(op.equals("2")){
-                    sucesso = this.server.registerClient(username, password, out);
+                    success = this.server.registerClient(username, password, out);
                 }
                 
-                if(op.equals("1")&& sucesso==false){
+                if(op.equals("1")&& success==false){
                     System.out.println("Wrong nickname or password, ask client for other try");
                     out.write("0");
                     out.newLine();
@@ -74,7 +74,7 @@ public class Server_Worker implements Runnable {
                     username = in.readLine();
                     password = in.readLine();
                 }
-                else if(op.equals("2")&& sucesso == false){
+                else if(op.equals("2")&& success == false){
                     System.out.println("This username is already used, ask client for other try");     
                     out.write("0");
                     out.newLine();
@@ -91,7 +91,7 @@ public class Server_Worker implements Runnable {
                 
             }
             
-            if(op.equals("1")&&sucesso == true){
+            if(op.equals("1")&&success == true){
                 System.out.println("SUCCESS Login : Client entered in the system !!");
                 out.write("1");
                 out.newLine();
@@ -100,7 +100,7 @@ public class Server_Worker implements Runnable {
                 out.flush();
                 
             }
-            else if (op.equals("2")&&sucesso== true){
+            else if (op.equals("2")&&success== true){
                 System.out.println("SUCCESS Register : Client entered in the system !!");       
                 out.write("1");
                 out.newLine();       
@@ -109,7 +109,7 @@ public class Server_Worker implements Runnable {
                 out.flush();
             }
  
-            Jogador jogador = this.server.getJogador(username);
+            Player player = this.server.getPlayer(username);
   //********************************************************************************************************************          
   
   //*********************************************Enter the Game******************************************************
@@ -120,45 +120,45 @@ public class Server_Worker implements Runnable {
                 
                 if(op.equals("1")){
                     boolean testGame = this.server.hasGame();
-                    Jogo actualGame = null;
+                    Game actualGame = null;
                     if(testGame == true){
                         actualGame = this.server.getGame();
-                        out.write("Foste adicionado ao jogo: "+ actualGame.getNome());
+                        out.write("You have been added to the game: "+ actualGame.getName());
                         out.newLine();
                         out.flush();
                         
                     }else if(testGame == false){
                         actualGame = this.server.createGame();
-                        out.write("Foste adicionado ao jogo: "+ actualGame.getNome());
+                        out.write("You have been added to the game: "+ actualGame.getName());
                         out.newLine();
                         out.flush();
                     }
                     
-                    actualGame.addJogador(jogador);
-                    Barreira b = actualGame.getBarreira();
-                    b.esperar();
+                    actualGame.addPlayer(player);
+                    Barrier b = actualGame.getBarrier();
+                    b.waiting();
                     
                     // Have the 10 players
                     
-                    HashMap<Integer,Heroi> lista = actualGame.getListaHerois();
+                    HashMap<Integer,Hero> list = actualGame.getHeroeslist();
                     for (int i=1; i<31;i++){
-                       String s = lista.get(i).getNome();
+                       String s = list.get(i).getName();
                        out.write(i + " -> "+ s);
                        out.newLine();
                        out.flush();
                     }
                     
-                    int escolhidos = actualGame.getEscolhidos();
-                    while(escolhidos<5){
-                        Thread t1 = new Thread(new SW_Listener(this.in, this.out, actualGame, jogador, this.server));
+                    int chosen = actualGame.getChosen();
+                    while(chosen<5){
+                        Thread t1 = new Thread(new SW_Listener(this.in, this.out, actualGame, player, this.server));
                         t1.start();
                         try { 
                             System.out.println("BEFORE THE SLEEP");
                             sleep(30000);
-                            System.out.println("ACABOU O SLEEP");
-                            escolhidos = actualGame.getEscolhidos();
-                            if(escolhidos<5){
-                                out.write("NAO FORAM ESCOLHDOS TODOS OS HEROIS, ESCOLHA OUTRO:");
+                            System.out.println("SLEEP ENDED");
+                            chosen = actualGame.getChosen();
+                            if(chosen<5){
+                                out.write("ALL HEROES WERE NOT CHOSEN, CHOOSE ANOTHER:");
                                 out.newLine();
                                 out.flush();
                             }
@@ -167,11 +167,11 @@ public class Server_Worker implements Runnable {
                         }
                     }
                     
-                    System.out.println("FIMMMMMMMMMM");
-                    out.write("FIM");
+                    System.out.println("ENDDDDDDDDDD");
+                    out.write("END");
                     out.newLine();
                     out.flush();
-                    out.write("FIM");
+                    out.write("END");
                     out.newLine();
                     out.flush();
                     
@@ -203,9 +203,6 @@ public class Server_Worker implements Runnable {
 	}
         
     }
-    
-    
-    
-    
+
 }
 

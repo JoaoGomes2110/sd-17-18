@@ -7,38 +7,38 @@ package overwatch;
 
 /**
  *
- * @author tiagofraga
+ * @author
  */
-public class Barreira {
+public class Barrier {
     
     private int maxElem;
     private int counterElem;
-    private int counterEtapa;
+    private int counterStage;
 
-    public Barreira(int n){
+    public Barrier(int n){
         this.maxElem=n;
         this.counterElem=0;
-	this.counterEtapa=0;
+	this.counterStage=0;
     }
 
-    public int getEtapa(){
-        return counterEtapa;
+    public int getStage(){
+        return counterStage;
     }
 
-    public synchronized void esperar(){
+    public synchronized void waiting(){
         this.counterElem++;
 
-	int cur_etapa = this.counterEtapa;
+	int cur_etapa = this.counterStage;
 
 	
 	if(this.counterElem==this.maxElem){
             this.notifyAll();
-            this.counterEtapa += 1;
+            this.counterStage += 1;
             this.counterElem = 0;
 	}
 	
         else{ 
-            while(cur_etapa == this.counterEtapa){
+            while(cur_etapa == this.counterStage){
                 try {
                     this.wait();
 		} catch (InterruptedException e) {

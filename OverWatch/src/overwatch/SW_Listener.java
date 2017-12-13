@@ -15,21 +15,21 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author tiagofraga
+ * @author
  */
 public class SW_Listener implements Runnable {
         
     private BufferedReader in;
     private BufferedWriter out;
-    private Jogo game;
-    private Jogador jogador;
+    private Game game;
+    private Player player;
     private Server server;
     
-    public SW_Listener(BufferedReader in, BufferedWriter out, Jogo actualGame, Jogador j, Server server){
+    public SW_Listener(BufferedReader in, BufferedWriter out, Game actualGame, Player j, Server server){
         this.in = in;
         this.out = out;
         this.game = actualGame;
-        this.jogador = j;
+        this.player = j;
         this.server = server;
     }
 	
@@ -39,10 +39,10 @@ public class SW_Listener implements Runnable {
         boolean bol;
         try {
             while((message = in.readLine()) != null){
-                bol = processaMenssagem(message);
+                bol = processMessage(message);
                 if(bol ==true){
-                    this.server.multicastTeam(game, this.jogador.getUsername(), message);
-                    System.out.println("CLIENT: "+ this.jogador.getUsername() +"in the game " + this.game.getNome() + "send " + message);
+                    this.server.multicastTeam(game, this.player.getUsername(), message);
+                    System.out.println("CLIENT: "+ this.player.getUsername() +"in the game " + this.game.getName() + "send " + message);
                 }
                 
             }
@@ -53,8 +53,8 @@ public class SW_Listener implements Runnable {
         
     }
 
-    public boolean processaMenssagem(String message) {
-        return this.game.atualizaHeroi(this.jogador, message);
+    public boolean processMessage(String message) {
+        return this.game.updateHero(this.player, message);
         
     }
 }

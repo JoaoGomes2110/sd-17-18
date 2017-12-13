@@ -16,12 +16,12 @@ import java.net.UnknownHostException;
 
 /**
  *
- * @author tiagofraga
+ * @author
  */
-public class Cliente {
+public class Client {
     
     private String hostname;
-    private int porta;
+    private int port;
     
     private Socket socket;
     private BufferedReader in;
@@ -36,20 +36,20 @@ public class Cliente {
     
     
     public static void main(String[] args) {
-        Cliente c = new Cliente("127.0.0.1",12345);
+        Client c = new Client("127.0.0.1",12345);
         c.clientStart();
     }
 
-    public Cliente(String string, int i) {
+    public Client(String string, int i) {
         this.hostname=string;
-        this.porta=i;
+        this.port=i;
     }
 
     public void clientStart() {
         try {	
             System.out.println("########################### OverWatch v1.0 ################################");
             System.out.println("> Connecting to server...");
-            this.socket = new Socket(this.hostname, this.porta);
+            this.socket = new Socket(this.hostname, this.port);
             System.out.println("> Connection accepted!");
 			
             
