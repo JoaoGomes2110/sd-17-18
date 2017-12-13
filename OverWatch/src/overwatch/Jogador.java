@@ -7,16 +7,16 @@ package overwatch;
 
 /**
  *
- * @author
+ * @author tiagofraga
  */
 
-public class Player {
+public class Jogador {
     
     private String username;
     private String password;
     private int rank;
     
-    public Player(String user, String pass){
+    public Jogador(String user, String pass){
         this.username = user;
         this.password = pass;
         this.rank = 0;

@@ -10,11 +10,16 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import static java.lang.Thread.sleep;
 import java.net.Socket;
+import java.net.SocketException;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
- * @author
+ * @author tiagofraga
  */
 public class Server_Worker implements Runnable {
     
@@ -23,16 +28,17 @@ public class Server_Worker implements Runnable {
     private BufferedReader in;
     private BufferedWriter out;
     
-    
     private String username;
     private String password;
+   
 
     
     public Server_Worker(Server server, Socket socket) throws IOException {
         this.server =  server;
         this.socket = socket;
         this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        this.out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        this.out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));  
+       
 
     }
 
@@ -41,22 +47,22 @@ public class Server_Worker implements Runnable {
     public void run() {
         try {
             String op;
-            boolean success= false;
+            boolean sucesso= false;
             
 //************************************FAZER O REGISTO**********************************************************
             op = in.readLine();
             username = in.readLine();
             password = in.readLine();
             
-            while(!success){
+            while(!sucesso){
                 
                 if(op.equals("1")){
-                    success = this.server.clientLogin(username, password, out);
+                    sucesso = this.server.loginClient(username, password, out);
                 } else if(op.equals("2")){
-                    success = this.server.clientRegister(username, password, out);
+                    sucesso = this.server.registerClient(username, password, out);
                 }
                 
-                if(op.equals("1")&& success==false){
+                if(op.equals("1")&& sucesso==false){
                     System.out.println("Wrong nickname or password, ask client for other try");
                     out.write("0");
                     out.newLine();
@@ -68,7 +74,7 @@ public class Server_Worker implements Runnable {
                     username = in.readLine();
                     password = in.readLine();
                 }
-                else if(op.equals("2")&& success == false){
+                else if(op.equals("2")&& sucesso == false){
                     System.out.println("This username is already used, ask client for other try");     
                     out.write("0");
                     out.newLine();
@@ -85,7 +91,7 @@ public class Server_Worker implements Runnable {
                 
             }
             
-            if(op.equals("1")&&success == true){
+            if(op.equals("1")&&sucesso == true){
                 System.out.println("SUCCESS Login : Client entered in the system !!");
                 out.write("1");
                 out.newLine();
@@ -94,7 +100,7 @@ public class Server_Worker implements Runnable {
                 out.flush();
                 
             }
-            else if (op.equals("2")&&success== true){
+            else if (op.equals("2")&&sucesso== true){
                 System.out.println("SUCCESS Register : Client entered in the system !!");       
                 out.write("1");
                 out.newLine();       
@@ -103,56 +109,85 @@ public class Server_Worker implements Runnable {
                 out.flush();
             }
  
-            Player jogador = this.server.getPlayer(username);
+            Jogador jogador = this.server.getJogador(username);
   //********************************************************************************************************************          
   
-  //*********************************************Enter the Game*********************************************************
+  //*********************************************Enter the Game******************************************************
     
             op = in.readLine();
+            
+            while(op.equals("1")){
                 
                 if(op.equals("1")){
                     boolean testGame = this.server.hasGame();
-                    Game actualGame = null;
+                    Jogo actualGame = null;
                     if(testGame == true){
                         actualGame = this.server.getGame();
-                        out.write("Foste adicionado ao jogo: "+ actualGame.getName());
+                        out.write("Foste adicionado ao jogo: "+ actualGame.getNome());
                         out.newLine();
                         out.flush();
                         
                     }else if(testGame == false){
                         actualGame = this.server.createGame();
-                        out.write("Foste adicionado ao jogo: "+ actualGame.getName());
+                        out.write("Foste adicionado ao jogo: "+ actualGame.getNome());
                         out.newLine();
                         out.flush();
                     }
                     
                     actualGame.addJogador(jogador);
-                    Barrier b = actualGame.getBarrier();
+                    Barreira b = actualGame.getBarreira();
                     b.esperar();
-                    out.write("Ide todos po crl");
-                    out.newLine();
-                    out.flush();
-//                    this.server.multicastGame(actualGame, "Ide todos po crl", jogador.getUsername());
-//                    this.server.showHerois(actualGame);
+                    
+                    // Have the 10 players
+                    
+                    HashMap<Integer,Heroi> lista = actualGame.getListaHerois();
+                    for (int i=1; i<31;i++){
+                       String s = lista.get(i).getNome();
+                       out.write(i + " -> "+ s);
+                       out.newLine();
+                       out.flush();
+                    }
+                    
+                    Thread t1 = new Thread(new SW_Listener(this.in, this.out, actualGame, jogador, this.server));
+                    t1.start();
+                    try {                    
+                        sleep(30000);
+                        out.write("PARAR");
+                        out.newLine();
+                        out.flush();
+                        t1.join();
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Server_Worker.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
+                    
+                    
+
+                    
+                    
                         
                 }else if(op.equals("2")){
-                    
+                
                 }
-               
-            
-            
+                op = in.readLine();
+            }
+       
             System.out.println("> Client "+ this.username + " exit the system");
-            this.server.clientShutdown(this.username);
+            this.server.shutdownClient(this.username);
             
             this.socket.shutdownOutput();
             this.socket.shutdownInput();
             this.socket.close();
   
-  //*+*******************************************Shutdown Client********************************+++****+++++++++++*++         
+  //********************************************Shutdown Client********************************+++****+++++++++++*++         
         }catch (IOException e) {
 			e.printStackTrace();
 	}
         
     }
     
+    
+    
+    
 }
+

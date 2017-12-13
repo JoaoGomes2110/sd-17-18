@@ -16,12 +16,12 @@ import java.net.UnknownHostException;
 
 /**
  *
- * @author
+ * @author tiagofraga
  */
-public class Client {
+public class Cliente {
     
     private String hostname;
-    private int port;
+    private int porta;
     
     private Socket socket;
     private BufferedReader in;
@@ -30,24 +30,26 @@ public class Client {
     private String username;
     private String password;
     
+    private int n;
+    
    
     
     
     public static void main(String[] args) {
-        Client c = new Client("127.0.0.1",12345);
+        Cliente c = new Cliente("127.0.0.1",12345);
         c.clientStart();
     }
 
-    public Client(String string, int i) {
+    public Cliente(String string, int i) {
         this.hostname=string;
-        this.port=i;
+        this.porta=i;
     }
 
     public void clientStart() {
         try {	
             System.out.println("########################### OverWatch v1.0 ################################");
             System.out.println("> Connecting to server...");
-            this.socket = new Socket(this.hostname, this.port);
+            this.socket = new Socket(this.hostname, this.porta);
             System.out.println("> Connection accepted!");
 			
             
@@ -115,18 +117,20 @@ public class Client {
             listener.start();
             if(op.equals("1")){
                 System.out.println("> Loading ...");
+                String answer;
                 msgResponse = in.readLine();
-                System.out.println(msgResponse);
-                msgResponse = in.readLine();
-                System.out.println(msgResponse);
+                while(!msgResponse.equals("PARAR")){
+                   answer = systemIn.readLine();
+                   out.write(answer);
+                   out.newLine();
+                   out.flush();
+                }
+               
+                System.out.println("EXIT THE THE SELECT HERO");
             }
            
 
-            //fechar sockets
-            systemIn.close();
-            socket.shutdownOutput();
-            socket.shutdownInput();
-            socket.close();
+           
 
             } catch (UnknownHostException e) {
                 System.out.println("ERRO: Server doesn't exist!");

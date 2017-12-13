@@ -16,37 +16,36 @@ import java.util.Map;
 
 /**
  *
- * @author
+ * @author tiagofraga
  */
 public class Server {
     
    private ServerSocket serverSocket;
-   private int port;
+   private int porta;
     
     
-   private HashMap <String, Player> players;
+   private HashMap <String, Jogador> jogadores;
    private HashMap <String,BufferedWriter> clients;
-   private HashMap <Integer,Game> games;
-   private HashMap <String,Hero> heroesList;
+   private HashMap <Integer,Jogo> games;
+   private HashMap <Integer,Heroi> listaHerois;
    private int number;
     
-   public Server(int port) throws IOException{
-	this.port = port;
-        this.players = new HashMap<>();
+   public Server(int porta) throws IOException{
+	this.porta = porta;
+        this.jogadores = new HashMap<>();
         this.clients = new HashMap<>();
         this.games = new HashMap<>();
-        this.heroesList = new HashMap<>();
+        this.listaHerois = new HashMap<>();
         this.number = 0;
     }
     
    public void startServer(){
 	try {
             System.out.println("#### OverWatch SERVER ####");
-            this.serverSocket = new ServerSocket(this.port);
-            System.out.println("> Loading heros...");
-            carregarheroesList();
+            this.serverSocket = new ServerSocket(this.porta);
+            carregarListaHerois(this.listaHerois);
             System.out.println("> Loading DataBase...");
-            carregarListaplayers();
+            carregarListaJogadores();
 
             while(true) {
 		System.out.println("ServerMain > Server is running waiting for a new connections...");
@@ -64,10 +63,10 @@ public class Server {
 	
     }
     
-   public synchronized boolean clientRegister(String nick, String pass, BufferedWriter writer){
-	Player novo = new Player(nick,pass);
-        if(!(players.containsKey(nick))){
-            players.put(nick,novo);
+   public synchronized boolean registerClient(String nick, String pass, BufferedWriter writer){
+	Jogador novo = new Jogador(nick,pass);
+        if(!(jogadores.containsKey(nick))){
+            jogadores.put(nick,novo);
             clients.put(nick, writer);
             return true;
         }else{
@@ -76,9 +75,9 @@ public class Server {
      
     }
     
-   public synchronized boolean clientLogin(String nick, String pass, BufferedWriter writer){
-        if(players.containsKey(nick)){
-            Player j = players.get(nick);
+   public synchronized boolean loginClient(String nick, String pass, BufferedWriter writer){
+        if(jogadores.containsKey(nick)){
+            Jogador j = jogadores.get(nick);
             if(j.getPassword().equals(pass)){
                 clients.put(nick, writer);
                 return true;
@@ -88,7 +87,7 @@ public class Server {
         return false;
     }
     
-   public synchronized void clientShutdown(String nick){
+   public synchronized void shutdownClient(String nick){
         clients.remove(nick);
     }
     
@@ -98,19 +97,21 @@ public class Server {
        
     }
 
-   public Player getPlayer(String username) {
-        return this.players.get(username);
+   public Jogador getJogador(String username) {
+        return this.jogadores.get(username);
     }
 
-   public synchronized Game createGame() {
-        Game jogo = new Game ("Game"+String.valueOf(this.number));
+   public synchronized Jogo createGame() {
+        Jogo jogo = new Jogo ("Game"+String.valueOf(this.number));
         this.games.put(this.number,jogo);
+        HashMap<Integer,Heroi> lista = jogo.getListaHerois();
+        carregarListaHerois(lista);
         this.number++;
         return jogo;     
     }
 
-   public synchronized Game getGame() {
-        for(Game j : this.games.values()){
+   public synchronized Jogo getGame() {
+        for(Jogo j : this.games.values()){
             if(j.getQuantidade()<10){
                 return j;
             }
@@ -118,21 +119,21 @@ public class Server {
         return null;
     }
 
-   public synchronized void multicastGame(Game actualGame, String msg, String actualPlayer) {
+   public void multicastGame(Jogo actualGame, String msg, String actualPlayer) {
         
-       ArrayList<String> homePlayers;
-        //ArrayList<String> awayPlayers;
-        Team home = actualGame.getHomeTeam();
-        //Team away = actualGame.getAwayTeam();
-        homePlayers = home.getPlayers();
-        //awayPlayers = fora.getplayers();
+       ArrayList<String> jogadoresCasa;
+        //ArrayList<String> jogadoresFora;
+        Equipa casa = actualGame.getEquipaCasa();
+        //Equipa fora = actualGame.getEquipaFora();
+        jogadoresCasa = casa.getJogadores();
+        //jogadoresFora = fora.getJogadores();
         
         
         
         HashMap<String, BufferedWriter> clientsToSend = new HashMap<>();
         
         for(String s: clients.keySet()){
-            for(String a: homePlayers){
+            for(String a: jogadoresCasa){
                 if(s.equals(a)){ 
                     clientsToSend.put(a,clients.get(s));
                 }  
@@ -141,7 +142,7 @@ public class Server {
         
         /*
         for(Map.Entry<String, BufferedWriter> s: clients.entrySet()){
-            for(String b: awayPlayers){
+            for(String b: jogadoresFora){
                 if(s.equals(b)){
                     clientsToSend.put(b,clients.get(s));
                 }
@@ -162,98 +163,99 @@ public class Server {
             }
         }
     }
-   
-   public synchronized void showHeroes(Game actualGame){
-       
-        ArrayList<String> homePlayers;
-        //ArrayList<String> awayPlayers;
-        Team home = actualGame.getHomeTeam();
-        //Equipa fora = actualGame.getAwayTeam();
-        homePlayers = home.getPlayers();
-        //awayPlayers = fora.getplayers();
 
-       HashMap<String, BufferedWriter> clientsToSend = new HashMap<>();
-        
-        for(String s: clients.keySet()){
-            for(String a: homePlayers){
-                if(s.equals(a)){ 
-                    clientsToSend.put(a,clients.get(s));
-                }  
-            } 
-        }
-        
-        /*
-        for(Map.Entry<String, BufferedWriter> s: clients.entrySet()){
-            for(String b: awayPlayers){
-                if(s.equals(b)){
-                    clientsToSend.put(b,clients.get(s));
-                }
-            } 
-        }
-        */
-       for(BufferedWriter out : clientsToSend.values()){ 
-           int i = 1;
-           for(String s: this.heroesList.keySet()){
-              try{
-                String hero = i + " - " + s;   
-                out.write(hero);
-                out.newLine();
-                out.flush();
-                i++;
-              }catch(IOException e){
-                  System.out.println(e.getMessage());
-              }
-            }
-       }
-   }
-
-   public void carregarListaplayers(){
-       this.players.put("tiagofraga",new Player("tiagofraga","tiago"));
-       this.players.put("joaogomes",new Player("joaogomes","joao"));
-       this.players.put("cesarioperneta",new Player("cesarioperneta","cesario"));
+   public void carregarListaJogadores(){
+       this.jogadores.put("tiagofraga",new Jogador("tiagofraga","tiago"));
+       this.jogadores.put("joaogomes",new Jogador("joaogomes","joao"));
+       this.jogadores.put("cesarioperneta",new Jogador("cesarioperneta","cesario"));
    }
     
-   public void carregarheroesList(){
-       this.heroesList.put("PintodaCosta", new Hero("PintodaCosta", 70));
-       this.heroesList.put("Aboubakar", new Hero("Aboubakar", 75));
-       this.heroesList.put("Marega", new Hero("Marega", 80));
-       this.heroesList.put("Brahimi", new Hero("Brahimi", 79));
-       this.heroesList.put("DaniloPereira", new Hero("DaniloPereira", 60));
-       this.heroesList.put("AndreAndre", new Hero("AndreAndre", 70));
-       this.heroesList.put("RicardoPereira", new Hero("RicardoPereira", 50));
-       this.heroesList.put("Felipe", new Hero("Felipe", 82));
-       this.heroesList.put("JoseSa", new Hero("JoseSa",88));
-       this.heroesList.put("TiquinhoSoares", new Hero("TiquinhoSoares",19));
-       this.heroesList.put("SergioConceicao", new Hero("SergioConceicao",60));
-       this.heroesList.put("BrunoCarvalho", new Hero("BrunoCarvalho",97));
-       this.heroesList.put("GelsonMartins", new Hero("GelsonMartins",100));
-       this.heroesList.put("WiliamCarvalho", new Hero("WiliamCarvalho",96));
-       this.heroesList.put("BrunoFernandes", new Hero("BrunoFernandes",94));
-       this.heroesList.put("Coates", new Hero("Coates",93));
-       this.heroesList.put("BasDost", new Hero("BasDost",92));
-       this.heroesList.put("RuiPatricio", new Hero("RuiPatricio",99));
-       this.heroesList.put("FabioCoentrao", new Hero("FabioCoentrao",91));
-       this.heroesList.put("DanielPodence", new Hero("DanielPodence",94));
-       this.heroesList.put("JorgeJesus", new Hero("JorgeJesus",89));
-       this.heroesList.put("LuisFilipeVieira", new Hero("LuisFilipeVieira",0));
-       this.heroesList.put("Jonas", new Hero("Jonas",10));
-       this.heroesList.put("Pizzi", new Hero("Pizzi",5));
-       this.heroesList.put("Luisao", new Hero("Luisao",2));
-       this.heroesList.put("Fejsa", new Hero("Fejsa",1));
-       this.heroesList.put("AndreAlmeida", new Hero("AndreAlmeida",3));
-       this.heroesList.put("Cervi", new Hero("Cervi",5));
-       this.heroesList.put("Jardel", new Hero("Jardel",1));
-       this.heroesList.put("RuiVitoria", new Hero("RuiVitoria",1));
+   public void carregarListaHerois(HashMap<Integer,Heroi> listaherois){
+       listaherois.put(1, new Heroi("PintodaCosta", 99));
+       listaherois.put(2, new Heroi("Aboubakar", 83));
+       listaherois.put(3, new Heroi("Marega", 99));
+       listaherois.put(4, new Heroi("Brahimi", 94));
+       listaherois.put(5, new Heroi("DaniloPereira", 93));
+       listaherois.put(6, new Heroi("AndreAndre", 85));
+       listaherois.put(7, new Heroi("RicardoPereira", 92));
+       listaherois.put(8, new Heroi("Felipe", 91));
+       listaherois.put(9, new Heroi("TiquinhoSoares",90));
+       listaherois.put(10, new Heroi("SergioConceicao",95));
+       listaherois.put(11, new Heroi("BrunoCarvalho",70));
+       listaherois.put(12, new Heroi("GelsonMartins",80));
+       listaherois.put(13, new Heroi("WiliamCarvalho",75));
+       listaherois.put(14, new Heroi("BrunoFernandes",79));
+       listaherois.put(15, new Heroi("Coates",60));
+       listaherois.put(16, new Heroi("BasDost",70));
+       listaherois.put(17, new Heroi("RuiPatricio",77));
+       listaherois.put(18, new Heroi("FabioCoentrao",50));
+       listaherois.put(19, new Heroi("DanielPodence",70));
+       listaherois.put(20, new Heroi("JorgeJesus",70));
+       listaherois.put(21, new Heroi("LuisFilipeVieira",0));
+       listaherois.put(22, new Heroi("Jonas",10));
+       listaherois.put(23, new Heroi("Pizzi",5));
+       listaherois.put(24, new Heroi("Luisao",2));
+       listaherois.put(25, new Heroi("Fejsa",1));
+       listaherois.put(26, new Heroi("AndreAlmeida",3));
+       listaherois.put(27, new Heroi("Cervi",5));
+       listaherois.put(28, new Heroi("Jardel",1));
+       listaherois.put(29, new Heroi("Eliseu",15));
+       listaherois.put(30, new Heroi("RuiVitoria",1));
      
    }
 
    public boolean hasGame() {
-        for(Game j : this.games.values()){
+        for(Jogo j : this.games.values()){
             if(j.getQuantidade()<10){
                 return true;
             }
         }
         return false;    
     }
+
+    public void multicastTeam(Jogo actualGame, String username, String heroi) {
+          
+        ArrayList<String> jogadoresAtual;
+        Equipa atual = actualGame.getEquipaJogador(username);
+        jogadoresAtual = atual.getJogadores();
+        
+        
+        
+        HashMap<String, BufferedWriter> clientsToSend = new HashMap<>();
+        
+        for(String s: clients.keySet()){
+            for(String a: jogadoresAtual){
+                if(s.equals(a)){ 
+                    clientsToSend.put(a,clients.get(s));
+                }  
+            } 
+        }
+        
+	for(String user : clientsToSend.keySet()) {
+            
+            try {
+                if(!user.equals(username)){
+                    BufferedWriter bw = clientsToSend.get(user);
+                    for(int i =1; i<31; i++){
+                        if(i == Integer.parseInt(heroi)){
+                            bw.write(i + " -> "+ this.listaHerois.get(i) + "-> CHOOSEN BY: "+ username);
+                            bw.newLine();
+                            bw.flush();
+                        }else{
+                            bw.write(i + " -> "+ this.listaHerois.get(i));
+                            bw.newLine();
+                            bw.flush();
+                            
+                        }
+                    }
+                }
+            } catch (IOException e) {
+		e.printStackTrace();
+            }
+        }
+        
+    }
+
    
 }
+

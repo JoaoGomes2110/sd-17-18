@@ -7,15 +7,15 @@ package overwatch;
 
 /**
  *
- * @author
+ * @author tiagofraga
  */
-public class Barrier {
+public class Barreira {
     
     private int maxElem;
     private int counterElem;
     private int counterEtapa;
 
-    public Barrier(int n){
+    public Barreira(int n){
         this.maxElem=n;
         this.counterElem=0;
 	this.counterEtapa=0;
