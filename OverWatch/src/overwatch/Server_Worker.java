@@ -152,9 +152,9 @@ public class Server_Worker implements Runnable {
                     while(escolhidos<5){
                         Thread t1 = new Thread(new SW_Listener(this.in, this.out, actualGame, jogador, this.server));
                         t1.start();
-                        try {                    
+                        try { 
+                            System.out.println("BEFORE THE SLEEP");
                             sleep(30000);
-                            t1.join();
                             System.out.println("ACABOU O SLEEP");
                             escolhidos = actualGame.getEscolhidos();
                             if(escolhidos<5){
@@ -168,6 +168,9 @@ public class Server_Worker implements Runnable {
                     }
                     
                     System.out.println("FIMMMMMMMMMM");
+                    out.write("FIM");
+                    out.newLine();
+                    out.flush();
                     out.write("FIM");
                     out.newLine();
                     out.flush();

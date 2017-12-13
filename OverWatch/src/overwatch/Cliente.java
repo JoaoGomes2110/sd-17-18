@@ -124,6 +124,7 @@ public class Cliente {
                    out.newLine();
                    out.flush();
                    msgResponse = in.readLine();
+                    System.out.println("*************************MSG_RESPONSE "+ msgResponse);
                    
                 }
                
@@ -150,8 +151,12 @@ public class Cliente {
             String message;
             try {
 		while((message = in.readLine()) != null){
-                    
-                        System.out.println(message);
+                        
+                    if(message.equals("*************************MSG_ "+ "FIM")){
+                        break;
+                    }
+                    System.out.println("*************************MSG_ "+ message);
+                        
                     
 		}
             }catch (SocketException e) {}

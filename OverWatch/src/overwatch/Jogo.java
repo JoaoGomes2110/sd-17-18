@@ -30,7 +30,7 @@ public class Jogo {
         this.listaherois = new HashMap<>();
         this.barreira = new Barreira(5);
         this.quantidade = 0;
-        this.escolhidos = 0;
+        this.escolhidos = 1;
         
     }
     
@@ -78,6 +78,7 @@ public class Jogo {
         boolean bol = atual.addHeroi(jogador,heroi);
         if(bol == true){
             synchronized(this){
+                System.out.println("ESCOLHIDOS *********************** : "+this.escolhidos);
                 this.escolhidos++;
             }
             
