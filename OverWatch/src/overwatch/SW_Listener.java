@@ -20,14 +20,12 @@ import java.util.logging.Logger;
 public class SW_Listener implements Runnable {
         
     private BufferedReader in;
-    private BufferedWriter out;
     private Game game;
     private Player player;
     private Server server;
     
-    public SW_Listener(BufferedReader in, BufferedWriter out, Game actualGame, Player j, Server server){
+    public SW_Listener(BufferedReader in, Game actualGame, Player j, Server server){
         this.in = in;
-        this.out = out;
         this.game = actualGame;
         this.player = j;
         this.server = server;

@@ -140,22 +140,29 @@ public class Server_Worker implements Runnable {
                     
                     // Have the 10 players
                     
-                    HashMap<Integer,Hero> list = actualGame.getHeroeslist();
-                    for (int i=1; i<31;i++){
-                       String s = list.get(i).getName();
-                       out.write(i + " -> "+ s);
-                       out.newLine();
-                       out.flush();
-                    }
+                    
                     
                     int chosen = actualGame.getChosen();
                     while(chosen<5){
-                        Thread t1 = new Thread(new SW_Listener(this.in, this.out, actualGame, player, this.server));
-                        t1.start();
                         try { 
                             System.out.println("BEFORE THE SLEEP");
+                            out.write("VAIDORMIR");
+                            out.newLine();
+                            out.flush();
+                            HashMap<Integer,Hero> list = actualGame.getHeroeslist();
+                            for (int i=1; i<31;i++){
+                                String s = list.get(i).getName();
+                                out.write(i + " -> "+ s);
+                                out.newLine();
+                                out.flush();
+                            }
+                            Thread t1 = new Thread(new SW_Listener(this.in, actualGame, player, this.server));
+                            t1.start();
                             sleep(30000);
                             System.out.println("SLEEP ENDED");
+                            out.write("FIM");
+                            out.newLine();
+                            out.flush();
                             chosen = actualGame.getChosen();
                             if(chosen<5){
                                 out.write("ALL HEROES WERE NOT CHOSEN, CHOOSE ANOTHER:");
@@ -168,22 +175,8 @@ public class Server_Worker implements Runnable {
                     }
                     
                     System.out.println("ENDDDDDDDDDD");
-                    out.write("END");
-                    out.newLine();
-                    out.flush();
-                    out.write("END");
-                    out.newLine();
-                    out.flush();
-                    
-                    
-                        
-                    
-                    
-                    
-
-                    
-                    
-                        
+                   
+            
                 }else if(op.equals("2")){
                 
                 }

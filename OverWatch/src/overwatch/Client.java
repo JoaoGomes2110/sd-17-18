@@ -10,9 +10,11 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import static java.lang.Thread.sleep;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Scanner;
 
 /**
  *
@@ -23,14 +25,17 @@ public class Client {
     private String hostname;
     private int port;
     
-    private Socket socket;
-    private BufferedReader in;
-    private BufferedWriter out;
+    public Socket socket;
+    public BufferedReader in;
+    public BufferedWriter out;
+  
     
-    private String username;
+    public String username;
     private String password;
     
-    private int n;
+    public boolean bol;
+    
+    
     
    
     
@@ -113,22 +118,39 @@ public class Client {
             out.flush();
             msgResponse = in.readLine();
             System.out.println(msgResponse);
-            Thread listener = new Thread (new ClientListener());
-            listener.start();
             if(op.equals("1")){
+                System.out.println("> Waiting for the other players... ");
                 System.out.println("> Loading ...");
-                String answer;
-                while(!msgResponse.equals("FIM")){
-                   answer = systemIn.readLine();
-                   out.write(answer);
-                   out.newLine();
-                   out.flush();
-                   msgResponse = in.readLine();
-                    System.out.println("*************************MSG_RESPONSE "+ msgResponse);
-                   
+                
+                msgResponse = in.readLine();
+                System.out.println("PUTAS : "+msgResponse);
+                
+                if(msgResponse.equals("VAIDORMIR")){
+                    
+                    Thread listener = new Thread(new ClientListener());
+                    Thread writer = new Thread(new ClientWriter(systemIn));
+                    listener.start();
+                    writer.start();
+                    System.out.println("Before the wait");
+                    this.bol = false;
+                    while(this.bol == false){
+                        synchronized (this){
+                            wait();
+                        }   
+                    }
+                    System.out.println("after the wait");
+                    
+                    systemIn.close();
+                    
+                    
+                    
+                }
+                else{
+                    System.out.println("PANADOS");
                 }
                
                 System.out.println("EXIT THE THE SELECT HERO");
+                
             }
            
 
@@ -149,12 +171,19 @@ public class Client {
 		
         public void run(){
             String message;
+            
             try {
 		while((message = in.readLine()) != null){
+                    if(message.equals("FIM")){
+                        bol = true;
+                        System.out.println("antes do notify");
+                        synchronized(this){
+                            notifyAll();
+                        }
+                        System.out.println("depois do notify");
                         
-                    if(message.equals("*************************MSG_ "+ "FIM")){
-                        break;
                     }
+                      
                     System.out.println("*************************MSG_ "+ message);
                         
                     
@@ -166,4 +195,29 @@ public class Client {
         }
     }
     
+    public class ClientWriter implements Runnable {
+        
+        private BufferedReader in;
+        public ClientWriter(BufferedReader in){
+            this.in = in;
+        }
+		
+        public void run(){
+            String message;
+            
+            try {
+		while((message = in.readLine()) != null){
+                      
+                    out.write(message);
+                    out.newLine();
+                    out.flush();
+                        
+                    
+		}
+            }catch (SocketException e) {}
+            catch (IOException e) {
+		e.printStackTrace();
+            }
+        }
+    }
 }
