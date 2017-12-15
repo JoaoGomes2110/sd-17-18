@@ -160,9 +160,7 @@ public class Server_Worker implements Runnable {
                             t1.start();
                             sleep(30000);
                             System.out.println("SLEEP ENDED");
-                            out.write("FIM");
-                            out.newLine();
-                            out.flush();
+
                             chosen = actualGame.getChosen();
                             if(chosen<5){
                                 out.write("ALL HEROES WERE NOT CHOSEN, CHOOSE ANOTHER:");
@@ -172,6 +170,9 @@ public class Server_Worker implements Runnable {
                         } catch (InterruptedException ex) {
                         Logger.getLogger(Server_Worker.class.getName()).log(Level.SEVERE, null, ex);
                         }
+                            out.write("FIM");
+                            out.newLine();
+                            out.flush();
                     }
                     
                     System.out.println("ENDDDDDDDDDD");

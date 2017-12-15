@@ -50,6 +50,10 @@ public class Client {
         this.port=i;
     }
 
+    public Client getClient(){
+        return this;
+    }
+    
     public void clientStart() {
         try {	
             System.out.println("########################### OverWatch v1.0 ################################");
@@ -127,22 +131,22 @@ public class Client {
                 
                 if(msgResponse.equals("VAIDORMIR")){
                     
-                    Thread listener = new Thread(new ClientListener());
+                    Thread listener = new Thread(new ClientListener(this));
                     Thread writer = new Thread(new ClientWriter(systemIn));
                     listener.start();
                     writer.start();
                     System.out.println("Before the wait");
                     this.bol = false;
-                    while(this.bol == false){
-                        synchronized (this){
+                    
+                    while(!this.bol){
+                        synchronized(this){
                             wait();
-                        }   
+                        }
+                      
                     }
                     System.out.println("after the wait");
                     
-                    systemIn.close();
-                    
-                    
+                    //systemIn.close();
                     
                 }
                 else{
@@ -167,24 +171,28 @@ public class Client {
     
     public class ClientListener implements Runnable {
         
-        public ClientListener(){}
-		
+        final Client c;
+        
+        public ClientListener(Client c){
+            this.c = c;
+        }
+        
         public void run(){
             String message;
-            
-            try {
+            try{
 		while((message = in.readLine()) != null){
                     if(message.equals("FIM")){
-                        bol = true;
-                        System.out.println("antes do notify");
-                        synchronized(this){
-                            notifyAll();
-                        }
-                        System.out.println("depois do notify");
-                        
+                       try{
+                            synchronized(c){
+                                bol = true;
+                                c.notifyAll();
+                           }
+                       }catch(Exception e){
+                           e.printStackTrace();
+                       }
                     }
                       
-                    System.out.println("*************************MSG_ "+ message);
+                System.out.println("*************************MSG_ "+ message);
                         
                     
 		}
