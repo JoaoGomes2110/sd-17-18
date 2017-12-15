@@ -102,7 +102,7 @@ public class Server {
     }
 
    public synchronized Game createGame() {
-        Game jogo = new Game ("Game"+String.valueOf(this.number));
+        Game jogo = new Game ("Game " + String.valueOf(this.number));
         this.games.put(this.number,jogo);
         HashMap<Integer,Hero> lista = jogo.getHeroeslist();
         loadHeroesList(lista);
@@ -117,51 +117,6 @@ public class Server {
             }
         }
         return null;
-    }
-
-   public void multicastGame(Game currentGame, String msg, String actualPlayer) {
-        
-       ArrayList<String> homePlayers;
-        //ArrayList<String> awayPlayers;
-        Team home = currentGame.getHometeam();
-        //Team away = currentGame.getAwayTeam();
-        homePlayers = home.getPlayers();
-        //awayPlayers = away.getplayers();
-        
-        
-        
-        HashMap<String, BufferedWriter> clientsToSend = new HashMap<>();
-        
-        for(String s: clients.keySet()){
-            for(String a: homePlayers){
-                if(s.equals(a)){ 
-                    clientsToSend.put(a,clients.get(s));
-                }  
-            } 
-        }
-        
-        /*
-        for(String s: clients.keySet()){
-            for(String b: awayPlayers){
-                if(s.equals(b)){
-                    clientsToSend.put(b,clients.get(s));
-                }
-            } 
-        }
-        */
-	for(String user : clientsToSend.keySet()) {
-            
-            try {
-                if(!user.equals(actualPlayer)){
-                    BufferedWriter bw = clientsToSend.get(user);
-                    bw.write(msg);
-                    bw.newLine();
-                    bw.flush();
-                }
-            } catch (IOException e) {
-		e.printStackTrace();
-            }
-        }
     }
 
    public void loadPlayersList(){
@@ -179,7 +134,7 @@ public class Server {
         return false;    
     }
 
-   public void multicastTeam(Game currentGame, String username, String heroi) {
+   public synchronized void multicastTeam(Game currentGame, String username, String heroi) {
           
         ArrayList<String> currentPlayers;
         Team current = currentGame.getTeamPlayer(username);

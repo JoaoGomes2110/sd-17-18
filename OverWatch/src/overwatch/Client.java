@@ -127,7 +127,7 @@ public class Client {
                 System.out.println("> Loading ...");
                 
                 msgResponse = in.readLine();
-                System.out.println("PUTAS : "+msgResponse);
+             
                 
                 if(msgResponse.equals("VAIDORMIR")){
                     
@@ -135,7 +135,6 @@ public class Client {
                     Thread writer = new Thread(new ClientWriter(systemIn));
                     listener.start();
                     writer.start();
-                    System.out.println("Before the wait");
                     this.bol = false;
                     
                     while(!this.bol){
@@ -143,21 +142,20 @@ public class Client {
                             wait();
                         }
                       
-                    }
-                    System.out.println("after the wait");
-                    
-                    //systemIn.close();
-                    
+                    }                    
                 }
                 else{
                     System.out.println("PANADOS");
                 }
                
                 System.out.println("EXIT THE THE SELECT HERO");
-                
+
             }
            
-
+            System.out.println("Game start in a few minutes");
+            out.write("Teams");
+            out.newLine();
+            out.flush();
            
 
             } catch (UnknownHostException e) {
@@ -171,7 +169,7 @@ public class Client {
     
     public class ClientListener implements Runnable {
         
-        final Client c;
+        private final Client c;
         
         public ClientListener(Client c){
             this.c = c;
@@ -181,7 +179,7 @@ public class Client {
             String message;
             try{
 		while((message = in.readLine()) != null){
-                    if(message.equals("FIM")){
+                    if(message.equals("END")){
                        try{
                             synchronized(c){
                                 bol = true;

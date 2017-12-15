@@ -98,14 +98,4 @@ public class Game {
     public int getChosen() {
        return this.chosen;
     }
-
-    
-   
-    
-   
-    
-    
-    
-   
-    
 }

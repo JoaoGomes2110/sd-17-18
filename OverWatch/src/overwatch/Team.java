@@ -40,7 +40,14 @@ public class Team {
         return false;
         
     }
-
+    
+    public HashMap<String,String> getList(){
+        HashMap<String,String> newList = new HashMap<>();
+        for(Player p: list.keySet()){
+            newList.put(p.getUsername(),this.list.get(p).getName());
+        }
+        return newList;
+    }
   
     public ArrayList<String> getPlayers(){
         ArrayList<String> neww = new ArrayList<>();

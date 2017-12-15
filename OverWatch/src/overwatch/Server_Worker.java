@@ -123,13 +123,13 @@ public class Server_Worker implements Runnable {
                     Game actualGame = null;
                     if(testGame == true){
                         actualGame = this.server.getGame();
-                        out.write("You have been added to the game: "+ actualGame.getName());
+                        out.write("You have been added to the game:  " + actualGame.getName());
                         out.newLine();
                         out.flush();
                         
                     }else if(testGame == false){
                         actualGame = this.server.createGame();
-                        out.write("You have been added to the game: "+ actualGame.getName());
+                        out.write("You have been added to the game:  " + actualGame.getName());
                         out.newLine();
                         out.flush();
                     }
@@ -143,6 +143,7 @@ public class Server_Worker implements Runnable {
                     
                     
                     int chosen = actualGame.getChosen();
+                    
                     while(chosen<5){
                         try { 
                             System.out.println("BEFORE THE SLEEP");
@@ -167,19 +168,52 @@ public class Server_Worker implements Runnable {
                                 out.newLine();
                                 out.flush();
                             }
+                            else t1.join();
                         } catch (InterruptedException ex) {
-                        Logger.getLogger(Server_Worker.class.getName()).log(Level.SEVERE, null, ex);
+                            System.out.println(ex.getMessage());
                         }
-                            out.write("FIM");
+                        out.write("END");
+                        out.newLine();
+                        out.flush();
+                    }
+                    
+                    String message = in.readLine();
+                    if(message.equals("Teams")){
+                        HashMap<String,String> pH = actualGame.getHometeam().getList();
+                        out.write("Home Team:");
+                        out.newLine();
+                        out.flush();
+                        for(String s: pH.keySet()){
+                            String msg = "Username: " + s + " -> " + "Hero: " + pH.get(s);
+                            out.write(msg);
                             out.newLine();
                             out.flush();
+                        }
+                        pH = actualGame.getAwayteam().getList();
+                        out.write("Away Team:");
+                        out.newLine();
+                        out.flush();
+                        for(String s: pH.keySet()){
+                            String msg = "Username: " + s + " -> " + "Hero: " + pH.get(s);
+                            out.write(msg);
+                            out.newLine();
+                            out.flush();
+                        }
                     }
+                    
+                    
+
                     
                     System.out.println("ENDDDDDDDDDD");
                    
             
                 }else if(op.equals("2")){
-                
+                        System.out.println("> Client "+ this.username + " exit the system");
+                        this.server.shutdownClient(this.username);
+                        
+                        this.socket.shutdownOutput();
+                        this.socket.shutdownInput();
+                        this.socket.close();
                 }
                 op = in.readLine();
             }
@@ -197,6 +231,5 @@ public class Server_Worker implements Runnable {
 	}
         
     }
-
 }
 

@@ -40,8 +40,9 @@ public class SW_Listener implements Runnable {
                 bol = processMessage(message);
                 if(bol ==true){
                     this.server.multicastTeam(game, this.player.getUsername(), message);
-                    System.out.println("CLIENT: "+ this.player.getUsername() +"in the game " + this.game.getName() + "send " + message);
+                    System.out.println("CLIENT: "+ this.player.getUsername() +" in the game " + this.game.getName() + " send " + message);
                 }
+                break;
                 
             }
         }catch (SocketException e) {}
@@ -53,8 +54,8 @@ public class SW_Listener implements Runnable {
 
     public boolean processMessage(String message) {
         return this.game.updateHero(this.player, message);
-        
     }
+    
 }
             
         
