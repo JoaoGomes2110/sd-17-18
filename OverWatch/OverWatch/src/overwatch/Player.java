@@ -55,7 +55,7 @@ public class Player {
         this.rank+=5;
     }
     
-    public synchronized void updateLooserRank(){
+    public synchronized void updateLoserRank(){
         this.rank++;
     }
      

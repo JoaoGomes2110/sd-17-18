@@ -156,7 +156,7 @@ public class Client {
                 msgResponse = in.readLine();
              
                 
-            if(msgResponse.equals("VAIDORMIR")){
+            if(msgResponse.equals("SLEEP")){
                     
                 Thread listener = new Thread(new ClientListener(this));
                 Thread writer = new Thread(new ClientWriter());

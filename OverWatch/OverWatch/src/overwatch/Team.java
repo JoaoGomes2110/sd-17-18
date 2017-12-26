@@ -117,7 +117,7 @@ public class Team {
            }
         }else if(op.equals("2")){
             for(Player p : list.keySet()){
-                p.updateLooserRank();
+                p.updateLoserRank();
             }
             
         }

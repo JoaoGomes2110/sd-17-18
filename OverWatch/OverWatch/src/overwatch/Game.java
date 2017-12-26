@@ -23,7 +23,7 @@ public class Game {
         this.home = new Team();
         this.away = new Team();
         this.heroeslist = new HashMap<>();
-        this.barrier = new Barrier(5);
+        this.barrier = new Barrier(10);
         this.quantity = 0;    
     }
     
@@ -102,13 +102,5 @@ public class Game {
             actual = this.away.getTeam(username);
         }
         return actual;
-    }
-
-    public void giveHero(Player player) {
-        boolean b = false;
-        while(b == false){
-            int randomNum = 1 + (int)(Math.random() * ((30 - 1) + 1));
-            b = updateHero(player, Integer.toString(randomNum));
-        }
     }
 }

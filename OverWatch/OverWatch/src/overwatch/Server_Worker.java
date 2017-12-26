@@ -140,7 +140,7 @@ public class Server_Worker implements Runnable {
 
                     try { 
                         System.out.println("BEFORE THE SLEEP");
-                        out.write("VAIDORMIR");
+                        out.write("SLEEP");
                         out.newLine();
                         out.flush();
                         
@@ -272,7 +272,38 @@ public class Server_Worker implements Runnable {
                             out.newLine();
                             out.flush();
                             
-                        } 
+                        }
+                        else{
+                            player.updateLoserRank();
+                            
+                            out.write("*********************** Better Luck Next Time!! **************************");
+                            out.newLine();
+                            out.flush();
+                            
+                            out.write("Result : LOSER");
+                            out.newLine();
+                            out.flush();
+                                        
+                            out.write("Your last Rank : " + (player.getRank()-1));
+                            out.newLine();
+                            out.flush();
+
+                            out.write("Your NEW Rank : " + player.getRank());
+                            out.newLine();
+                            out.flush();
+                            
+                            out.write("*********************************************************************");
+                            out.newLine();
+                            out.flush();
+
+                            out.write("*********************************************************************");
+                            out.newLine();
+                            out.flush();
+                            
+                            out.write("RETURN");
+                            out.newLine();
+                            out.flush();
+                        }
                     }
             
                 }
