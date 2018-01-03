@@ -156,13 +156,12 @@ public class Server_Worker implements Runnable {
                         Thread t1 = new Thread(new SW_Listener(actualGame, player, this.server));
                         t1.start();
                         sleep(30000);
-                        
+                        actualGame.randomHeroGame();
                         System.out.println("Select Hero SLEEP ENDED");
                         out.write("END");
                         out.newLine();
                         out.flush();
                         t1.join();
-
                   
                     } catch (InterruptedException ex) {
                         System.out.println(ex.getMessage());

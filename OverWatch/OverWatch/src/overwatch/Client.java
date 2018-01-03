@@ -207,13 +207,7 @@ public class Client {
             out.write("RESULT");
             out.newLine();
             out.flush();
-            
-            
-            op = systemIn.readLine();
-            out.write(op);
-            out.newLine();
-            out.flush();
-            
+                   
             }
             
             } catch (UnknownHostException e) {
@@ -251,6 +245,7 @@ public class Client {
                                System.out.println("********* Choose what do you want ***********");
                                System.out.println("> 1 -> Enter in a Match");
                                System.out.println("> 2 -> Exit the Game");
+                               
                     }else{
                         System.out.println(message);
                     }

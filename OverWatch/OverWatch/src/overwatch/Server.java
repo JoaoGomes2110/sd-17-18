@@ -123,9 +123,19 @@ public class Server {
     }
 
    public void loadPlayersList(){
-       this.players.put("tiagofraga",new Player("tiagofraga","tiago",0));
-       this.players.put("joaogomes",new Player("joaogomes","joao",1));
-       this.players.put("cesarioperneta",new Player("cesarioperneta","cesario",1));
+       this.players.put("tiagofraga",new Player("tiagofraga","tiago",8));
+       this.players.put("joaogomes",new Player("joaogomes","joao",10));
+       this.players.put("cesarioperneta",new Player("cesarioperneta","cesario",5));
+       this.players.put("a",new Player("a","a",0));
+       this.players.put("s",new Player("s","s",0));
+       this.players.put("d",new Player("d","d",0));
+       this.players.put("f",new Player("f","f",0));
+       this.players.put("g",new Player("g","g",0));
+       this.players.put("h",new Player("h","h",1));
+       this.players.put("j",new Player("j","j",1));
+       this.players.put("k",new Player("k","k",1));
+       this.players.put("l",new Player("l","l",1));
+       this.players.put("ç",new Player("ç","ç",1));
    }
 
    public boolean hasGame(Player p) {
@@ -185,8 +195,8 @@ public class Server {
     
    public synchronized Team simulateGame(Game game){
         int home = game.getHometeam().getTeamOverall();
-       // int away= game.getAwayteam().getTeamOverall();
-        int away = 0;
+        int away= game.getAwayteam().getTeamOverall();
+        
         if(home>away){
             return game.getHometeam();
         }else{
@@ -205,26 +215,26 @@ public class Server {
        heroesList.put(8, new Hero("Felipe", 85));
        heroesList.put(9, new Hero("TiquinhoSoares",70));
        heroesList.put(10, new Hero("SergioConceicao",60));
-       heroesList.put(11, new Hero("BrunoCarvalho",99));
-       heroesList.put(12, new Hero("GelsonMartins",99));
-       heroesList.put(13, new Hero("WiliamCarvalho",93));
-       heroesList.put(14, new Hero("BrunoFernandes",94));
-       heroesList.put(15, new Hero("Coates",91));
-       heroesList.put(16, new Hero("BasDost",92));
-       heroesList.put(17, new Hero("RuiPatricio",99));
-       heroesList.put(18, new Hero("FabioCoentrao",95));
-       heroesList.put(19, new Hero("DanielPodence",93));
-       heroesList.put(20, new Hero("JorgeJesus",97));
-       heroesList.put(21, new Hero("LuisFilipeVieira",0));
-       heroesList.put(22, new Hero("Jonas",10));
-       heroesList.put(23, new Hero("Pizzi",5));
-       heroesList.put(24, new Hero("Luisao",2));
-       heroesList.put(25, new Hero("Fejsa",1));
-       heroesList.put(26, new Hero("AndreAlmeida",3));
-       heroesList.put(27, new Hero("Cervi",5));
-       heroesList.put(28, new Hero("Jardel",1));
-       heroesList.put(29, new Hero("Eliseu",15));
-       heroesList.put(30, new Hero("RuiVitoria",1));
+       heroesList.put(11, new Hero("BrunoCarvalho",10));
+       heroesList.put(12, new Hero("GelsonMartins",80));
+       heroesList.put(13, new Hero("WiliamCarvalho",83));
+       heroesList.put(14, new Hero("BrunoFernandes",84));
+       heroesList.put(15, new Hero("Coates",71));
+       heroesList.put(16, new Hero("BasDost",82));
+       heroesList.put(17, new Hero("RuiPatricio",79));
+       heroesList.put(18, new Hero("FabioCoentrao",65));
+       heroesList.put(19, new Hero("DanielPodence",73));
+       heroesList.put(20, new Hero("JorgeJesus",57));
+       heroesList.put(21, new Hero("LuisFilipeVieira",70));
+       heroesList.put(22, new Hero("Jonas",99));
+       heroesList.put(23, new Hero("Pizzi",95));
+       heroesList.put(24, new Hero("RubenDias",90));
+       heroesList.put(25, new Hero("Fejsa",97));
+       heroesList.put(26, new Hero("AndreAlmeida",85));
+       heroesList.put(27, new Hero("Cervi",80));
+       heroesList.put(28, new Hero("Jardel",90));
+       heroesList.put(29, new Hero("Eliseu",100));
+       heroesList.put(30, new Hero("RuiVitoria",70));
      
    }
    

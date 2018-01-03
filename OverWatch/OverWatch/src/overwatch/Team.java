@@ -49,13 +49,20 @@ public class Team {
             return true;
         }
         return false;
-        
     }
     
+    public HashMap<Player,Hero> getPlayerHeroList(){
+        HashMap<Player,Hero> newList = new HashMap<>();
+        for(Player p : list.keySet()){
+            newList.put(p,this.list.get(p));
+        }
+        return newList;
+    }
     public HashMap<String,String> getList(){
         HashMap<String,String> newList = new HashMap<>();
         for(Player p: list.keySet()){
-            newList.put(p.getUsername(),this.list.get(p).getName());
+            if(list.get(p) != null)
+                newList.put(p.getUsername(),this.list.get(p).getName());
         }
         return newList;
     }
